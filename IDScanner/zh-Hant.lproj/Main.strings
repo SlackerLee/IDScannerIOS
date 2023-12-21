@@ -1,0 +1,12 @@
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "Zab-iF-bak"; */
+"Zab-iF-bak.text" = "Title";
+
+/* Class = "UILabel"; text = "Subtitle"; ObjectID = "fy7-8X-dvY"; */
+"fy7-8X-dvY.text" = "Subtitle";
+
+/* Class = "UITableViewController"; title = "Information"; ObjectID = "iBF-7q-y4w"; */
+"iBF-7q-y4w.title" = "Information";
+
+/* Class = "UIButton"; normalTitle = "SCAN"; ObjectID = "vfl-uO-zwx"; */
+"vfl-uO-zwx.normalTitle" = "SCAN";

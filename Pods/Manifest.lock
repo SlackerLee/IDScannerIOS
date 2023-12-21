@@ -1,0 +1,32 @@
+PODS:
+  - Alamofire (4.9.1)
+  - ObjectMapper (4.2.0)
+  - ReachabilitySwift (5.0.0)
+  - SwiftyJSON (5.0.1)
+  - Toast-Swift (5.0.1)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.9.1)
+  - ObjectMapper (~> 4.2)
+  - ReachabilitySwift (~> 5.0)
+  - SwiftyJSON (~> 5.0)
+  - Toast-Swift (~> 5.0)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - ObjectMapper
+    - ReachabilitySwift
+    - SwiftyJSON
+    - Toast-Swift
+
+SPEC CHECKSUMS:
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+
+PODFILE CHECKSUM: 8702345d5941b4627fc7ad6ebee682c570442b5f
+
+COCOAPODS: 1.14.2

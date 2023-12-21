@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  IDScanner
+
+  Created by iOS Team on 14/7/2021.
+  
+*/
+
+"LBL_SCAN" = "SCAN";
+"LBL_IN_PROGRESS" = "IN PROGRESS";
