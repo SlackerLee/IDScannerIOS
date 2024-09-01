@@ -29,7 +29,6 @@ class ScannerViewController: BaseViewController, AVCaptureFileOutputRecordingDel
     }
 
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-       
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
@@ -77,7 +76,9 @@ class ScannerViewController: BaseViewController, AVCaptureFileOutputRecordingDel
                                 break;
                             }
                         }
-                        self.previewView.videoPreviewLayer.session?.startRunning()
+                        DispatchQueue.global(qos: .background).async {
+                            self.previewView.videoPreviewLayer.session?.startRunning()
+                        }
                         LoadingIndicator.instance.stopAnimating(navigationItem: self.navigationItem)
                         self.setScanBtn(isEnabled: true)
                     }

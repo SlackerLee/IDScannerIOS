@@ -11,11 +11,25 @@ class ScannerDetailTableViewController: UITableViewController {
     @IBOutlet weak var ivResultImage: UIImageView!
     var imageInfoList:  [[String: Any]]?
 
+    @IBOutlet weak var textView: UITextView!
     var resultImage: UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         ivResultImage.image = resultImage
+        
+        var resultString = "";
+        imageInfoList?.forEach({ imageInfo in
+            if let value = imageInfo.first?.value, let valueString = value as? String {
+                resultString += valueString.isEmpty ? " ": valueString
+            }
+        })
+        self.textView.isScrollEnabled = false
+        textView.text = resultString
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -30,6 +44,7 @@ class ScannerDetailTableViewController: UITableViewController {
 
         // Show the navigation bar on other view controllers
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        NotificationCenter.default.removeObserver(self)
     }
     // MARK: - Table view data source
 
@@ -46,16 +61,32 @@ class ScannerDetailTableViewController: UITableViewController {
     func loadData() {
         self.tableView.reloadData()
     }
+    
+    
+    @objc func keyboardWillShow(notification: Notification) {
+        if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
+            print("Notification: Keyboard will show")
+            tableView.setBottomInset(to: keyboardHeight)
+        }
+    }
 
+    @objc func keyboardWillHide(notification: Notification) {
+        print("Notification: Keyboard will hide")
+        tableView.setBottomInset(to: 0.0)
+    }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "infoIdentifier", for: indexPath)
-
-        cell.textLabel?.text = imageInfoList?[indexPath.row].first?.key
-        if let value = imageInfoList?[indexPath.row].first?.value, let valueString = value as? String {
-            cell.detailTextLabel?.text = valueString.isEmpty ? " ": valueString
-        }
-        
+        cell.textLabel?.text = "Result"
         return cell
+    }
+}
+extension UITableView {
+
+    func setBottomInset(to value: CGFloat) {
+        let edgeInset = UIEdgeInsets(top: 0, left: 0, bottom: value, right: 0)
+
+        self.contentInset = edgeInset
+        self.scrollIndicatorInsets = edgeInset
     }
 }

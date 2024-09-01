@@ -38,10 +38,21 @@ class PreviewView: UIView {
     }
     
     var videoPreviewLayer: AVCaptureVideoPreviewLayer {
-        guard let layer = layer as? AVCaptureVideoPreviewLayer else {
-            fatalError("Expected `AVCaptureVideoPreviewLayer` type for layer. Check PreviewView.layerClass implementation.")
+        var previewLayer: AVCaptureVideoPreviewLayer!
+        if Thread.isMainThread {
+            guard let layer = layer as? AVCaptureVideoPreviewLayer else {
+                fatalError("Expected `AVCaptureVideoPreviewLayer` type for layer. Check PreviewView.layerClass implementation.")
+            }
+            previewLayer = layer
+        } else {
+            DispatchQueue.main.sync {
+                guard let layer = self.layer as? AVCaptureVideoPreviewLayer else {
+                    fatalError("Expected `AVCaptureVideoPreviewLayer` type for layer. Check PreviewView.layerClass implementation.")
+                }
+                previewLayer = layer
+            }
         }
-        return layer
+        return previewLayer
     }
     
     var session: AVCaptureSession? {
@@ -89,8 +100,9 @@ class PreviewView: UIView {
             
             self.videoPreviewLayer.addSublayer(createMaskLayer(videoPreviewLayer: self.videoPreviewLayer))
             self.videoPreviewLayer.addSublayer(createEdgedCornersLayer(videoPreviewLayer: self.videoPreviewLayer))
-            
-            session?.startRunning()
+            DispatchQueue.global(qos: .background).async {
+                self.session?.startRunning()
+            }
         } catch let error {
             print(error)
             scanningDidFail()
@@ -107,26 +119,21 @@ class PreviewView: UIView {
 extension PreviewView {
     
     func createMaskLayer(videoPreviewLayer: AVCaptureVideoPreviewLayer) -> CAShapeLayer {
-        
-        // MARK: - Background Mask
-        
-        let cornerRadius = videoPreviewLayer.cornerRadius
         let path = CGMutablePath()
-        path.addRect(bounds)
-        path.addRoundedRect(in: maskContainer, cornerWidth: cornerRadius, cornerHeight: cornerRadius)
-        
+        path.addRect(CGRect(x: 0,
+                            y: 0,
+                            width: UIScreen.main.bounds.width, height:  UIScreen.main.bounds.height))
+        path.addRect(maskContainer) // Add the custom rectangle to the path
+
         let maskLayer = CAShapeLayer()
         maskLayer.path = path
         maskLayer.fillColor = UIColor.black.withAlphaComponent(0.6).cgColor
         maskLayer.fillRule = .evenOdd
-        
-        self.videoPreviewLayer.addSublayer(maskLayer)
+
+        self.videoPreviewLayer.mask = maskLayer
         return maskLayer
     }
     func createEdgedCornersLayer(videoPreviewLayer: AVCaptureVideoPreviewLayer) -> CAShapeLayer {
-        
-        // MARK: - Edged Corners
-        
         var cornerRadius = videoPreviewLayer.cornerRadius
         if cornerRadius > cornerLength { cornerRadius = cornerLength }
         if cornerLength > maskContainer.width / 2 { cornerLength = maskContainer.width / 2 }
